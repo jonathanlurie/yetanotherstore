@@ -9,33 +9,45 @@ Yetanotherstore provides a unique singleton-like dictionary (key-values). There 
 
 In addition, some events are going to be emitted everytime the storage is modified. See the **event** section.
 
+# Create a Store
+First, you need to create a Store instance in a place where it's going to be accessible by the components that need it. Let's create a file `AppStore.js` that will instantiate `Store` and export the store object:
+```js
+// AppStore.js
+
+import Store from 'yetanotherstore'
+
+let AppStore = new Store()
+export default AppStore
+```
+Now, every file that import `AppStore.js` will be able to use the Store instance and access the same pool of data.
+
 # Methods
 
 ```javascript
-import Store from 'yetanotherstore'
+import AppStore from './AppStore'
 
 // ...
 
 // Add something to the store
-Store.add('someKey', 'some value')
-Store.add('anotherKey', {firstname: 'Johnny', lastname: 'Bravo'})
+AppStore.add('someKey', 'some value')
+AppStore.add('anotherKey', {firstname: 'Johnny', lastname: 'Bravo'})
 
 // get a value
-les someVal = Store.get('someKey')
+les someVal = AppStore.get('someKey')
 
 // Remove something from the store
-Store.delete('someKey')
+AppStore.delete('someKey')
 
 // check is the store has some key
-if(Store.has('someKey')){
+if(AppStore.has('someKey')){
   // ...
 }
 
 // Get an array with all the keys
-let allTheKeys = Store.keys()
+let allTheKeys = AppStore.keys()
 
 // Reset the store so that it becomes empty
-Store.reset()
+AppStore.reset()
 ```
 
 
@@ -45,7 +57,8 @@ All the following event can accept multiple callback, there is no limit. Read mo
 ## `valueSet`
 Everytime a value is added or set in the store with the method `Store.set()`, the event `valueSet` is emitted. To subscribe to this event, do the following:
 ```js
-Store.on('valueSet', function(evt){
+import AppStore from './AppStore'
+AppStore.on('valueSet', function(evt){
   // ...
 })
 ```
@@ -58,7 +71,8 @@ Then, the object `evt` contains the properties:
 ## `valueDeleted`
 When a value is removed from the Store with the method `Store.delete()`, the event `valueDeleted` is emitted. To subscribe to this event, do the following:
 ```js
-Store.on('valueDeleted', function(evt){
+import AppStore from './AppStore'
+AppStore.on('valueDeleted', function(evt){
   // ...
 })
 ```
@@ -70,7 +84,8 @@ Then, the object `evt` contains the properties:
 ## `reseted`
 When the whole store is reset with the method `Store.reset()`, the event `reseted` is emitted. To subscribe to this event, do the following:
 ```js
-Store.on('reseted', function(){
+import AppStore from './AppStore'
+AppStore.on('reseted', function(){
   // ...
 })
 ```

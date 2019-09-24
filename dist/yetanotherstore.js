@@ -119,65 +119,62 @@
 
   }
 
-  let storage = {};
-
   class Store extends EventManager {
 
     constructor(){
       super();
+      this._storage = {};
     }
 
     set(key, value){
       let argObj = {
         key: key,
         value: value,
-        previousValue: storage[key] // possibly undefined
+        previousValue: this._storage[key] // possibly undefined
       };
 
-      storage[key] = value;
+      this._storage[key] = value;
 
       this.emit('valueSet', [argObj]);
     }
 
 
     get(key){
-      return storage[key]
+      return this._storage[key]
     }
 
 
     delete(key){
-      if(key in storage){
+      if(key in this._storage){
         argObj = {
           key: key,
           value: value
         };
 
-        delete storage[key];
+        delete this._storage[key];
         this.emit('valueDeleted', [argObj]);
       }
     }
 
 
     has(key){
-      return (key in storage)
+      return (key in this._storage)
     }
 
 
     reset(){
-      storage = {};
+      this._storage = {};
       this.emit('reseted', []);
     }
 
 
     keys(){
-      return Object.keys(storage)
+      return Object.keys(this._storage)
     }
 
   }
 
-  let singletonStore = new Store();
-
-  return singletonStore;
+  return Store;
 
 })));
 //# sourceMappingURL=yetanotherstore.js.map
