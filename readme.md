@@ -5,9 +5,9 @@ npm install --save yetanotherstore
 ```
 
 # Concept
-Yetanotherstore provides a unique singleton-like dictionary (key-values). There are some built in methods to add, remove, check and list properties but the object that contains those properties is not directly accessible (thanks to scoping). This guaranties that the *key-values* are never edited without the help of the provided methods.
+Yetanotherstore provides a unique singleton-like dictionary (key-values). There are some built in methods to add, remove, check and list properties. This guaranties that the *key-values* are never edited without the help of the provided methods.
 
-In addition, some events are going to be emitted everytime the storage is modified. See the **event** section.
+In addition, some events are going to be emitted every time the storage is modified. See the **event** section.
 
 # Create a Store
 First, you need to create a Store instance in a place where it's going to be accessible by the components that need it. Let's create a file `AppStore.js` that will instantiate `Store` and export the store object:
@@ -29,8 +29,8 @@ import AppStore from './AppStore'
 // ...
 
 // Add something to the store
-AppStore.add('someKey', 'some value')
-AppStore.add('anotherKey', {firstname: 'Johnny', lastname: 'Bravo'})
+AppStore.set('someKey', 'some value')
+AppStore.set('anotherKey', {firstname: 'Johnny', lastname: 'Bravo'})
 
 // get a value
 les someVal = AppStore.get('someKey')

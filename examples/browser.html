@@ -1,10 +1,10 @@
 <html>
 <head>
-  <title>Test</title>
+  <title>yetanotherstore</title>
 </head>
 <body>
   <!-- importing the automatically build module -->
-  <script src="../dist/es6module.js"></script>
+  <script src="../dist/yetanotherstore.js"></script>
 
   <!-- The minified version is also accessible -->
   <!-- <script src="../dist/es6module.umd.min.js"></script> -->
@@ -13,14 +13,27 @@
 
   <script>
 
-    // the foo object is part of our es6module module
-    var foo = new es6module.Foo(20, 30);
+    let store = new yetanotherstore()
 
-    // do something with foo
-    foo.printAnAttribute();
-    foo.setAnAttribute(34)
-    foo.printAnAttribute();
-    foo.testWorker01();
+    store.on('valueSet', data => {
+      console.log('The value', data.value, 'was set with key', data.key)
+      console.log('Its previous value was', data.previousValue)
+    })
+
+    store.on('set:someKey', data => {
+      console.log('This is the value with the someKey key!', data)
+    })
+
+    
+
+    store.set('someKey', 42)
+
+    store.set('someKey', 'forty two')
+
+    store.set('otherKey', {firstname: 'Johnny', lastname: 'Bravo'})
+
+
+
   </script>
 
 </body>
