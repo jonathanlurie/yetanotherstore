@@ -91,5 +91,50 @@ AppStore.on('reseted', function(){
 ```
 This callback has no argument.
 
+# Extra
+## Gatekeeper
+A store provides the possibility to add a *gatekeeper* function, to make sure that some verifications is performed before stuff are being pushed into the store. The gatekeeper function takes two argument: `key` and 'value' and must return 'true' (the data is valid and can be pushed into the store) or 'false' (the data is invalid and cannot be pushed).   
+
+If the gatekeeper refuses to let a piece of data in, the event `refused` is emited. Let's see an example:
+
+```js
+let store = new yetanotherstore()
+
+// From now on, the gatekeeper accepts only values that are of type string
+store.setGateKeeper((key, value) => {
+  return typeof value === 'string'
+})
+
+// the callback when a value is refused by the gatekeeper function
+store.on('refused', data => {
+  console.log(`Nope, the value ${data.value} is not a string`)
+})
+
+// Later, for some reason, we want to remove the gatekeeper:
+store.setGateKeeper(null)
+```
+
+## Lock
+This is to prevent the store to be set any values with the regular `.set(key, value)` method. But, if we use the *forceLock* version, we can still push things in:
+
+```js
+let store = new yetanotherstore()
+
+// lock the store, no one can push data inthere unless they use .set(key, value, true)
+// with true being the 'forceLock' argument
+store.lock()
+
+// this won't add anything to the store
+store.set('myKey', 32)
+
+// but this will:
+store.set('myForcedKey', 32, true)
+
+// Then, other methods are available:
+store.unlock()
+let isItLocked = store.isLocked() // true or false
+
+```
+
 # The React usecase
 **Yetanotherstore** can be used across components as a global store, such that a value added by a component trigger an event into one or multiple other components.
