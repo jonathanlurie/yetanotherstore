@@ -150,7 +150,7 @@ class Store extends EventManager {
    * control will happen on the call of the .set method/
    * @param {function|null} fn - the gatekeeper function
    */
-  setGateKeeper(fn){
+  setGatekeeper(fn){
     if(typeof fn === 'function' || fn === null){
       this._gateKeeper = fn
     }
