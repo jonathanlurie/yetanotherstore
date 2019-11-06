@@ -1,6 +1,6 @@
 {
   "name": "yetanotherstore",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A key value store in non persistant memory, with events.",
   "repository": "jonathanlurie/yetanotherstore",
   "main": "lib/yetanotherstore.js",
@@ -58,6 +58,6 @@
     }
   },
   "dependencies": {
-    "@jonathanlurie/eventmanager": "^1.0.0"
+    "@jonathanlurie/eventmanager": "^1.0.1"
   }
 }

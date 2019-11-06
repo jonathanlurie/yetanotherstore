@@ -9,30 +9,8 @@
    * because the uuid most popular package is using a node dep
    */
 
-   function b(
-    a                  // placeholder
-  ){
-    return a           // if the placeholder was passed, return
-      ? (              // a random number from 0 to 15
-        a ^            // unless b is 8,
-        Math.random()  // in which case
-        * 16           // a random number from
-        >> a/4         // 8 to 11
-        ).toString(16) // in hexadecimal
-      : (              // or otherwise a concatenated string:
-        [1e7] +        // 10000000 +
-        -1e3 +         // -1000 +
-        -4e3 +         // -4000 +
-        -8e3 +         // -80000000 +
-        -1e11          // -100000000000,
-        ).replace(     // replacing
-          /[018]/g,    // zeroes, ones, and eights with
-          b            // random hex digits
-        )
-  }
-
-  function b(a){
-    return a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,b)
+  function uuidv4(a){
+    return a?(a^Math.random()*16>>a/4).toString(16):([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,uuidv4)
   }
 
   /**
@@ -81,7 +59,7 @@
           this._events[eventName] = [];
         }
 
-        let eventId = b();
+        let eventId = uuidv4();
         this._eventIndex[eventId] = {
           eventName: eventName,
           callback: callback
@@ -136,6 +114,7 @@
 
 
   }
+  //# sourceMappingURL=eventmanager.js.map
 
   /**
    * A store is a place to store 'key:value' tuples. A key is generally a string
@@ -154,6 +133,8 @@
     constructor(){
       super();
       this._storage = {};
+      this._gateKeeper = null;
+      this._locked = false;
     }
 
 
@@ -164,9 +145,14 @@
      *   - 'set:{key}' where {key} is the key as a string, with the argument {key: string, value: any, previousValue: any}
      * @param {string|number} key - identifier of the value
      * @param {any} value - the value
+     * @param {boolean} forceLock - bypass the locked after the .lock() methods was called.
      * @return {string} the key as a string
      */
-    set(key, value){
+    set(key, value, forceLock = false){
+      if(this._locked && !forceLock){
+        return
+      }
+
       if(typeof key === 'object'){
         throw new Error('Keys cannot be object')
         return
@@ -175,12 +161,18 @@
       let validKey = key.toString();
       let argObj = {
         key: validKey,
-        value: value,
-        previousValue: this._storage[validKey] // possibly undefined
+        value: value
       };
 
-      this._storage[validKey] = value;
+      if(this._gateKeeper){
+        let isValid = this._gateKeeper(key, value);
+        if(!isValid){
+          return this.emit('refused', [argObj])
+        }
+      }
 
+      argObj.previousValue = this._storage[validKey]; // possibly undefined
+      this._storage[validKey] = value;
       this.emit('valueSet', [argObj]);
       this.emit(`set:${validKey}`, [argObj]);
       return validKey
@@ -251,6 +243,58 @@
      */
     keys(){
       return Object.keys(this._storage)
+    }
+
+
+    /**
+     * Get all the values from the store, without the keys
+     * @return {Array}
+     */
+    values(){
+      return Object.values(this._storage)
+    }
+
+
+    /**
+     * Define the gate keeper function.
+     * This function is a data validator for the .set method. It takes two arguments
+     * (the key and the value of the piece of data to add) and returns true (valid to be added)
+     * of false (not valid to be added). If the object is non valid to be added, then the event
+     * 'refused' is emitted, with the arg {key, value}.
+     * If the gatekeeper function is no set or set to null, the feature is not used and no
+     * control will happen on the call of the .set method/
+     * @param {function|null} fn - the gatekeeper function
+     */
+    setGateKeeper(fn){
+      if(typeof fn === 'function' || fn === null){
+        this._gateKeeper = fn;
+      }
+    }
+
+
+    /**
+     * Check if the store is locked
+     * @return {boolean}
+     */
+    isLocked(){
+      return this._locked
+    }
+
+
+    /**
+     * Lock the store, so that the .set method cannot be used unless the
+     * arg forceLock is set to true.
+     */
+    lock(){
+      this._locked = true;
+    }
+
+
+    /**
+     * No longer use the lock
+     */
+    unlock(){
+      this._locked = false;
     }
 
   }

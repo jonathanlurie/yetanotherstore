@@ -24,15 +24,22 @@
       console.log('This is the value with the someKey key!', data)
     })
 
-    
-
     store.set('someKey', 42)
-
     store.set('someKey', 'forty two')
-
     store.set('otherKey', {firstname: 'Johnny', lastname: 'Bravo'})
 
+    // From now on, the gatekeeper accepts only strings
+    store.setGateKeeper((key, value) => {
+      return typeof value === 'string'
+    })
 
+    // the callback when a value is refused by the gatekeeper function
+    store.on('refused', data => {
+      console.log(`Nope, the value ${data.value} is not a string`)
+    })
+
+    store.set('someString', 'hello string')
+    store.set('someNonString', 100)
 
   </script>
 
