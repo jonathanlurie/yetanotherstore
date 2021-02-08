@@ -14,11 +14,15 @@
     -   [reset][10]
     -   [keys][11]
     -   [values][12]
-    -   [setGatekeeper][13]
+    -   [setGateKeeper][13]
         -   [Parameters][14]
     -   [isLocked][15]
     -   [lock][16]
     -   [unlock][17]
+    -   [onSet][18]
+        -   [Parameters][19]
+    -   [onDelete][20]
+        -   [Parameters][21]
 
 ## Store
 
@@ -46,11 +50,11 @@ Throw the events:
 
 #### Parameters
 
--   `key` **([string][18] \| [number][19])** identifier of the value
+-   `key` **([string][22] \| [number][23])** identifier of the value
 -   `value` **any** the value
--   `forceLock` **[boolean][20]** bypass the locked after the .lock() methods was called. (optional, default `false`)
+-   `forceLock` **[boolean][24]** bypass the locked after the .lock() methods was called. (optional, default `false`)
 
-Returns **[string][18]** the key as a string
+Returns **[string][22]** the key as a string
 
 ### get
 
@@ -58,9 +62,9 @@ Retrieve the value corresponding to the 'key'
 
 #### Parameters
 
--   `key` **([string][18] \| [number][19])** identifier of the value
+-   `key` **([string][22] \| [number][23])** identifier of the value
 
-Returns **(any | [undefined][21])** the value, possibly 'undefined' if not in store
+Returns **(any | [undefined][25])** the value, possibly 'undefined' if not in store
 
 ### delete
 
@@ -72,9 +76,9 @@ Throw the events:
 
 #### Parameters
 
--   `key` **([string][18] \| [number][19])** identifier of the value
+-   `key` **([string][22] \| [number][23])** identifier of the value
 
-Returns **[boolean][20]** true if the value was successfully deleted, false if not (because not found)
+Returns **[boolean][24]** true if the value was successfully deleted, false if not (because not found)
 
 ### has
 
@@ -82,9 +86,9 @@ Check if a given key is in the store
 
 #### Parameters
 
--   `key` **([string][18] \| [number][19])** identifier of the value
+-   `key` **([string][22] \| [number][23])** identifier of the value
 
-Returns **[boolean][20]** true if is in store, false if not
+Returns **[boolean][24]** true if is in store, false if not
 
 ### reset
 
@@ -95,15 +99,15 @@ Throw the event 'reseted' with no argument.
 
 Get all the keys in the store
 
-Returns **[Array][22]** array of strings
+Returns **[Array][26]** array of strings
 
 ### values
 
 Get all the values from the store, without the keys
 
-Returns **[Array][22]** 
+Returns **[Array][26]** 
 
-### setGatekeeper
+### setGateKeeper
 
 Define the gate keeper function.
 This function is a data validator for the .set method. It takes two arguments
@@ -115,13 +119,13 @@ control will happen on the call of the .set method/
 
 #### Parameters
 
--   `fn` **([function][23] | null)** the gatekeeper function
+-   `fn` **([function][27] | null)** the gatekeeper function
 
 ### isLocked
 
 Check if the store is locked
 
-Returns **[boolean][20]** 
+Returns **[boolean][24]** 
 
 ### lock
 
@@ -131,6 +135,24 @@ arg forceLock is set to true.
 ### unlock
 
 No longer use the lock
+
+### onSet
+
+Add an event to when a key is being set. Equivalent to `on('set:keyName, fn)` but shorter
+
+#### Parameters
+
+-   `key` **[String][22]** unique key of an entry in the store
+-   `fn` **callback** callback function for when this key is being set
+
+### onDelete
+
+Add an event to when a key is being deleted. Equivalent to `on('del:keyName, fn)` but shorter
+
+#### Parameters
+
+-   `key` **[String][22]** unique key of an entry in the store
+-   `fn` **callback** callback function for when this key is being deleted
 
 [1]: #store
 
@@ -166,14 +188,22 @@ No longer use the lock
 
 [17]: #unlock
 
-[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[18]: #onset
 
-[19]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[19]: #parameters-5
 
-[20]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[20]: #ondelete
 
-[21]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined
+[21]: #parameters-6
 
-[22]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[22]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
 
-[23]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+[23]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[24]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[25]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined
+
+[26]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[27]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function

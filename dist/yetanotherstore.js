@@ -201,9 +201,9 @@
     delete(key){
       let validKey = key.toString();
       if(validKey in this._storage){
-        argObj = {
+        const argObj = {
           key: validKey,
-          value: value
+          value: this._storage[validKey]
         };
 
         delete this._storage[validKey];
@@ -264,7 +264,7 @@
      * control will happen on the call of the .set method/
      * @param {function|null} fn - the gatekeeper function
      */
-    setGatekeeper(fn){
+    setGateKeeper(fn) {
       if(typeof fn === 'function' || fn === null){
         this._gateKeeper = fn;
       }
@@ -294,6 +294,26 @@
      */
     unlock(){
       this._locked = false;
+    }
+
+
+    /**
+     * Add an event to when a key is being set. Equivalent to `on('set:keyName, fn)` but shorter
+     * @param {String} key - unique key of an entry in the store
+     * @param {callback} fn - callback function for when this key is being set
+     */
+    onSet(key, fn) {
+      return this.on(`set:${key}`, fn)
+    }
+
+
+    /**
+     * Add an event to when a key is being deleted. Equivalent to `on('del:keyName, fn)` but shorter
+     * @param {String} key - unique key of an entry in the store
+     * @param {callback} fn - callback function for when this key is being deleted
+     */
+    onDelete(key, fn) {
+      return this.on(`del:${key}`, fn)
     }
 
   }

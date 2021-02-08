@@ -13,23 +13,30 @@
 
   <script>
 
+
     let store = new yetanotherstore()
     console.log(store)
-    store.lock()
+    // store.lock()
 
     store.on('valueSet', data => {
       console.log('The value', data.value, 'was set with key', data.key)
       console.log('Its previous value was', data.previousValue)
     })
 
-    store.on('set:someKey', data => {
+    store.onSet('someKey', data => {
       console.log('This is the value with the someKey key!', data)
+    })
+
+    store.onDelete('someKey', data => {
+      console.log('This was just deleted', data)
     })
 
     store.set('someKey', 42)
     store.set('someKey', 'forty two')
     store.set('otherKey', {firstname: 'Johnny', lastname: 'Bravo'})
 
+
+    
     // From now on, the gatekeeper accepts only strings
     store.setGateKeeper((key, value) => {
       return typeof value === 'string'
@@ -42,6 +49,8 @@
 
     store.set('someString', 'hello string')
     store.set('someNonString', 100)
+
+    store.delete('someKey')
 
   </script>
 

@@ -91,6 +91,31 @@ AppStore.on('reseted', function(){
 ```
 This callback has no argument.
 
+# `onSet` for a specific key
+To watch a particular key in the store, we can use the method `.onSet(key, fn)` as follow:
+```js
+import AppStore from './AppStore'
+AppStore.onSet('age', (evt) => {
+  // The available data are:
+  // - evt.key
+  // - evt.value
+  // - evt.previousValue
+})
+```
+
+
+# `onDelete` for a specific key
+To watch when a particular key in the store is being deleted, we can use the method `.onDelete(key, fn)` as follow:
+```js
+import AppStore from './AppStore'
+AppStore.onDelete('age', (evt) => {
+  // The available data are:
+  // - evt.key
+  // - evt.value (the last value it had before being deleted)
+})
+```
+
+
 # Extra
 ## Gatekeeper
 A store provides the possibility to add a *gatekeeper* function, to make sure that some verifications is performed before stuff are being pushed into the store. The gatekeeper function takes two argument: `key` and 'value' and must return 'true' (the data is valid and can be pushed into the store) or 'false' (the data is invalid and cannot be pushed).   
