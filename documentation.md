@@ -5,24 +5,29 @@
 -   [Store][1]
     -   [set][2]
         -   [Parameters][3]
-    -   [get][4]
+    -   [setAsync][4]
         -   [Parameters][5]
-    -   [delete][6]
+    -   [get][6]
         -   [Parameters][7]
-    -   [has][8]
+    -   [delete][8]
         -   [Parameters][9]
-    -   [reset][10]
-    -   [keys][11]
-    -   [values][12]
-    -   [setGateKeeper][13]
-        -   [Parameters][14]
-    -   [isLocked][15]
-    -   [lock][16]
-    -   [unlock][17]
-    -   [onSet][18]
+    -   [deleteAsync][10]
+        -   [Parameters][11]
+    -   [has][12]
+        -   [Parameters][13]
+    -   [reset][14]
+    -   [resetAsync][15]
+    -   [keys][16]
+    -   [values][17]
+    -   [setGateKeeper][18]
         -   [Parameters][19]
-    -   [onDelete][20]
-        -   [Parameters][21]
+    -   [isLocked][20]
+    -   [lock][21]
+    -   [unlock][22]
+    -   [onSet][23]
+        -   [Parameters][24]
+    -   [onDelete][25]
+        -   [Parameters][26]
 
 ## Store
 
@@ -50,11 +55,27 @@ Throw the events:
 
 #### Parameters
 
--   `key` **([string][22] \| [number][23])** identifier of the value
+-   `key` **([string][27] \| [number][28])** identifier of the value
 -   `value` **any** the value
--   `forceLock` **[boolean][24]** bypass the locked after the .lock() methods was called. (optional, default `false`)
+-   `forceLock` **[boolean][29]** bypass the locked after the .lock() methods was called. (optional, default `false`)
 
-Returns **[string][22]** the key as a string
+Returns **[string][27]** the key as a string
+
+### setAsync
+
+Add or update a value in the store, under the name of the key. Async.
+Throw the events:
+
+-   'valueDeleted' with the argument {key: string, value: any, previousValue: any}
+-   'set:{key}' where {key} is the key as a string, with the argument {key: string, value: any, previousValue: any}
+
+#### Parameters
+
+-   `key` **([string][27] \| [number][28])** identifier of the value
+-   `value` **any** the value
+-   `forceLock` **[boolean][29]** bypass the locked after the .lock() methods was called. (optional, default `false`)
+
+Returns **[string][27]** the key as a string
 
 ### get
 
@@ -62,9 +83,9 @@ Retrieve the value corresponding to the 'key'
 
 #### Parameters
 
--   `key` **([string][22] \| [number][23])** identifier of the value
+-   `key` **([string][27] \| [number][28])** identifier of the value
 
-Returns **(any | [undefined][25])** the value, possibly 'undefined' if not in store
+Returns **(any | [undefined][30])** the value, possibly 'undefined' if not in store
 
 ### delete
 
@@ -76,9 +97,23 @@ Throw the events:
 
 #### Parameters
 
--   `key` **([string][22] \| [number][23])** identifier of the value
+-   `key` **([string][27] \| [number][28])** identifier of the value
 
-Returns **[boolean][24]** true if the value was successfully deleted, false if not (because not found)
+Returns **[boolean][29]** true if the value was successfully deleted, false if not (because not found)
+
+### deleteAsync
+
+Delete a value from the store, using its key as identifier. Async.
+Throw the events:
+
+-   'valueDeleted' with the argument {key: string, value: any}
+-   'del:{key}' where {key} is the key as a string, with the argument {key: string, value: any}
+
+#### Parameters
+
+-   `key` **([string][27] \| [number][28])** identifier of the value
+
+Returns **[boolean][29]** true if the value was successfully deleted, false if not (because not found)
 
 ### has
 
@@ -86,26 +121,31 @@ Check if a given key is in the store
 
 #### Parameters
 
--   `key` **([string][22] \| [number][23])** identifier of the value
+-   `key` **([string][27] \| [number][28])** identifier of the value
 
-Returns **[boolean][24]** true if is in store, false if not
+Returns **[boolean][29]** true if is in store, false if not
 
 ### reset
 
 Flush the store, remove everything.
 Throw the event 'reseted' with no argument.
 
+### resetAsync
+
+Flush the store, remove everything. Async.
+Throw the event 'reseted' with no argument.
+
 ### keys
 
 Get all the keys in the store
 
-Returns **[Array][26]** array of strings
+Returns **[Array][31]** array of strings
 
 ### values
 
 Get all the values from the store, without the keys
 
-Returns **[Array][26]** 
+Returns **[Array][31]** 
 
 ### setGateKeeper
 
@@ -119,13 +159,13 @@ control will happen on the call of the .set method/
 
 #### Parameters
 
--   `fn` **([function][27] | null)** the gatekeeper function
+-   `fn` **([function][32] | null)** the gatekeeper function
 
 ### isLocked
 
 Check if the store is locked
 
-Returns **[boolean][24]** 
+Returns **[boolean][29]** 
 
 ### lock
 
@@ -142,7 +182,7 @@ Add an event to when a key is being set. Equivalent to `on('set:keyName, fn)` bu
 
 #### Parameters
 
--   `key` **[String][22]** unique key of an entry in the store
+-   `key` **[String][27]** unique key of an entry in the store
 -   `fn` **callback** callback function for when this key is being set
 
 ### onDelete
@@ -151,7 +191,7 @@ Add an event to when a key is being deleted. Equivalent to `on('del:keyName, fn)
 
 #### Parameters
 
--   `key` **[String][22]** unique key of an entry in the store
+-   `key` **[String][27]** unique key of an entry in the store
 -   `fn` **callback** callback function for when this key is being deleted
 
 [1]: #store
@@ -160,50 +200,60 @@ Add an event to when a key is being deleted. Equivalent to `on('del:keyName, fn)
 
 [3]: #parameters
 
-[4]: #get
+[4]: #setasync
 
 [5]: #parameters-1
 
-[6]: #delete
+[6]: #get
 
 [7]: #parameters-2
 
-[8]: #has
+[8]: #delete
 
 [9]: #parameters-3
 
-[10]: #reset
+[10]: #deleteasync
 
-[11]: #keys
+[11]: #parameters-4
 
-[12]: #values
+[12]: #has
 
-[13]: #setgatekeeper
+[13]: #parameters-5
 
-[14]: #parameters-4
+[14]: #reset
 
-[15]: #islocked
+[15]: #resetasync
 
-[16]: #lock
+[16]: #keys
 
-[17]: #unlock
+[17]: #values
 
-[18]: #onset
+[18]: #setgatekeeper
 
-[19]: #parameters-5
+[19]: #parameters-6
 
-[20]: #ondelete
+[20]: #islocked
 
-[21]: #parameters-6
+[21]: #lock
 
-[22]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[22]: #unlock
 
-[23]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[23]: #onset
 
-[24]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[24]: #parameters-7
 
-[25]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined
+[25]: #ondelete
 
-[26]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[26]: #parameters-8
 
-[27]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
+[27]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[28]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[29]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[30]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/undefined
+
+[31]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[32]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function

@@ -1,0 +1,63 @@
+<html>
+<head>
+  <title>yetanotherstore</title>
+</head>
+<body>
+  <!-- importing the automatically build module -->
+  <script src="../dist/yetanotherstore.js"></script>
+
+  <!-- The minified version is also accessible -->
+  <!-- <script src="../dist/es6module.umd.min.js"></script> -->
+
+  <p>Open Javascript console.</p>
+
+  <script>
+
+    async function sleep(ms) {
+      const sleepPromise = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve()
+        }, ms)
+      })
+      await sleepPromise
+    }
+
+
+    async function main() {
+      let store = new yetanotherstore()
+      console.log(store)
+
+      // store.on('valueSet', data => {
+      //   console.log('The value', data.value, 'was set with key', data.key)
+      //   console.log('Its previous value was', data.previousValue)
+      // })
+
+      // adding events
+      store.onSet('someVal', (evt) => {
+        console.log('(1) a sync event')
+      })
+
+      store.onSet('someVal', async (evt) => {
+        console.log('(2) This is an async event to wait two second...')
+        await sleep(2000)
+        console.log('> (2) waiting done.')
+      })
+
+      store.onSet('someVal', (evt) => {
+        console.log('(3) a sync event')
+      })
+
+
+      store.setAsync('someVal', 10)
+
+    }
+
+    
+    main()
+
+
+
+  </script>
+
+</body>
+</html>

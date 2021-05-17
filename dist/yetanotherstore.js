@@ -33,6 +33,19 @@
 
 
     /**
+     * Tells how many events are registered under this event name
+     * @return {number}
+     */
+    countEvents(eventName){
+      if(eventName in this._events){
+        return this._events[eventName].length
+      }else{
+        return 0
+      }
+    }
+
+
+    /**
      * This way, the events are not emitted
      */
     disableEvents() {
@@ -76,6 +89,11 @@
     }
 
 
+    /**
+     * Emit the event, run the functions attached to it
+     * @param {string} eventName - the name of the event to run
+     * @param {Array} args - array of arguments the event callbacks are going to be called with (with destructuring operator)
+     */
     emit(eventName, args = []) {
       if(!this._enabled){
         return
@@ -86,6 +104,26 @@
         const events = this._events[eventName];
         for (let i = 0; i < events.length; i += 1) {
           this._eventIndex[events[i]].callback(...args);
+        }
+      }
+    }
+
+
+    /**
+     * Emit the event, run the functions attached to it in a async fashion
+     * @param {string} eventName - the name of the event to run
+     * @param {Array} args - array of arguments the event callbacks are going to be called with (with destructuring operator)
+     */
+     async emitAsync(eventName, args = []) {
+      if(!this._enabled){
+        return
+      }
+
+      // the event must exist and be non null
+      if ((eventName in this._events) && (this._events[eventName].length > 0)) {
+        const events = this._events[eventName];
+        for (let i = 0; i < events.length; i += 1) {
+          await this._eventIndex[events[i]].callback(...args);
         }
       }
     }
@@ -109,6 +147,10 @@
 
       if(index !== -1) {
         eventOfSameName.splice(index, 1);
+      }
+
+      if(eventOfSameName.length === 0){
+        delete this._events[this._eventIndex[eventId].eventName];
       }
     }
 
@@ -178,6 +220,48 @@
     }
 
 
+    /**
+     * Add or update a value in the store, under the name of the key. Async.
+     * Throw the events:
+     *   - 'valueDeleted' with the argument {key: string, value: any, previousValue: any}
+     *   - 'set:{key}' where {key} is the key as a string, with the argument {key: string, value: any, previousValue: any}
+     * @param {string|number} key - identifier of the value
+     * @param {any} value - the value
+     * @param {boolean} forceLock - bypass the locked after the .lock() methods was called.
+     * @return {string} the key as a string
+     */
+     async setAsync(key, value, forceLock = false){
+      if(this._locked && !forceLock){
+        return
+      }
+
+      if(typeof key === 'object'){
+        throw new Error('Keys cannot be object')
+        return
+      }
+
+      let validKey = key.toString();
+      let argObj = {
+        key: validKey,
+        value: value
+      };
+
+      if(this._gateKeeper){
+        let isValid = this._gateKeeper(key, value);
+        if(!isValid){
+          await this.emitAsync('refused', [argObj]);
+          return
+        }
+      }
+
+      argObj.previousValue = this._storage[validKey]; // possibly undefined
+      this._storage[validKey] = value;
+      await this.emitAsync('valueSet', [argObj]);
+      await this.emitAsync(`set:${validKey}`, [argObj]);
+      return validKey
+    }
+
+
 
     /**
      * Retrieve the value corresponding to the 'key'
@@ -217,6 +301,32 @@
 
 
     /**
+     * Delete a value from the store, using its key as identifier. Async.
+     * Throw the events:
+     *   - 'valueDeleted' with the argument {key: string, value: any}
+     *   - 'del:{key}' where {key} is the key as a string, with the argument {key: string, value: any}
+     * @param {string|number} key - identifier of the value
+     * @return {boolean} true if the value was successfully deleted, false if not (because not found)
+     */
+     async deleteAsync(key){
+      let validKey = key.toString();
+      if(validKey in this._storage){
+        const argObj = {
+          key: validKey,
+          value: this._storage[validKey]
+        };
+
+        delete this._storage[validKey];
+        await this.emitAsync('valueDeleted', [argObj]);
+        await this.emitAsync(`del:${validKey}`, [argObj]);
+        return true
+      }
+
+      return false
+    }
+
+
+    /**
      * Check if a given key is in the store
      * @param {string|number} key - identifier of the value
      * @return {boolean} true if is in store, false if not
@@ -233,6 +343,16 @@
     reset(){
       this._storage = {};
       this.emit('reseted', []);
+    }
+
+
+    /**
+     * Flush the store, remove everything. Async.
+     * Throw the event 'reseted' with no argument.
+     */
+    async resetAsync(){
+      this._storage = {};
+      await this.emitAsync('reseted', []);
     }
 
 
@@ -302,8 +422,8 @@
      * @param {String} key - unique key of an entry in the store
      * @param {callback} fn - callback function for when this key is being set
      */
-    onSet(key, fn) {
-      return this.on(`set:${key}`, fn)
+    async onSet(key, fn) {
+      return await this.on(`set:${key}`, fn)
     }
 
 
@@ -312,8 +432,8 @@
      * @param {String} key - unique key of an entry in the store
      * @param {callback} fn - callback function for when this key is being deleted
      */
-    onDelete(key, fn) {
-      return this.on(`del:${key}`, fn)
+    async onDelete(key, fn) {
+      return await this.on(`del:${key}`, fn)
     }
 
   }
