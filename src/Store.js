@@ -280,6 +280,42 @@ class Store extends EventManager {
     return await this.on(`del:${key}`, fn)
   }
 
+
+  /**
+   * Binds a function to the 'valueSet' event. Such event happens whenever the `.set()`
+   * method is called on this store. 
+   * This method is not specific for a given key.
+   * @param {Function} callback function to be called when the 'valueSet' event occurs.
+   * This callback has a single argument of the shape {key: string|number, value: any, previousValue: any}
+   */
+  async onValueSet(fn) {
+    return await this.on('valueSet', fn)
+  }
+
+
+  /**
+   * Binds a function to the 'valueDeleted' event. Such event happens whenever the `.delete()`
+   * method is called on this store. 
+   * This method is not specific for a given key.
+   * @param {Function} callback function to be called when the 'valueDeleted' event occurs.
+   * This callback has a single argument of the shape {key: string|number, value: any, previousValue: any}
+   */
+  async onValueDeleted(fn) {
+    return await this.on('valueDeleted', fn)
+  }
+
+
+  /**
+   * Binds a function to the 'reseted' event. Such event happens whenever the `.reset()`
+   * method is called on this store. 
+   * This method is not specific for a given key.
+   * @param {Function} callback function to be called when the 'reseted' event occurs.
+   * This callback has no argument
+   */
+  async onReseted(fn) {
+    return await this.on('reseted', fn)
+  }
+
 }
 
 export default Store

@@ -18,7 +18,7 @@
     console.log(store)
     // store.lock()
 
-    store.on('valueSet', data => {
+    store.onValueSet(data => {
       console.log('The value', data.value, 'was set with key', data.key)
       console.log('Its previous value was', data.previousValue)
     })
@@ -29,6 +29,14 @@
 
     store.onDelete('someKey', data => {
       console.log('This was just deleted', data)
+    })
+
+    store.onValueDeleted(data => {
+      console.log('A value was deleted...')
+    })
+
+    store.onReseted(() => {
+      console.log('The store was reseted...')
     })
 
     store.set('someKey', 42)
@@ -51,6 +59,8 @@
     store.set('someNonString', 100)
 
     store.delete('someKey')
+
+    store.reset()
 
   </script>
 

@@ -58,12 +58,12 @@ All the following event can accept multiple callback, there is no limit. Read mo
 Everytime a value is added or set in the store with the method `Store.set()`, the event `valueSet` is emitted. To subscribe to this event, do the following:
 ```js
 import AppStore from './AppStore'
-AppStore.on('valueSet', function(evt){
+AppStore.onValueSet((data) => {
   // ...
 })
 ```
 
-Then, the object `evt` contains the properties:
+Then, the object `data` contains the properties:
 - `key`: the key that was just added or modified
 - `value`: the corresponding value
 - `previousValue`: the previous value, if there was already something corresponding to this key (`undefined` otherwise)
@@ -72,12 +72,12 @@ Then, the object `evt` contains the properties:
 When a value is removed from the Store with the method `Store.delete()`, the event `valueDeleted` is emitted. To subscribe to this event, do the following:
 ```js
 import AppStore from './AppStore'
-AppStore.on('valueDeleted', function(evt){
+AppStore.onValueDeleted((data) => {
   // ...
 })
 ```
 
-Then, the object `evt` contains the properties:
+Then, the object `data` contains the properties:
 - `key`: the key that was just deleted
 - `value`: the corresponding value
 
@@ -85,7 +85,7 @@ Then, the object `evt` contains the properties:
 When the whole store is reset with the method `Store.reset()`, the event `reseted` is emitted. To subscribe to this event, do the following:
 ```js
 import AppStore from './AppStore'
-AppStore.on('reseted', function(){
+AppStore.onReseted(() => {
   // ...
 })
 ```
@@ -95,11 +95,11 @@ This callback has no argument.
 To watch a particular key in the store, we can use the method `.onSet(key, fn)` as follow:
 ```js
 import AppStore from './AppStore'
-AppStore.onSet('age', (evt) => {
+AppStore.onSet('age', (data) => {
   // The available data are:
-  // - evt.key
-  // - evt.value
-  // - evt.previousValue
+  // - data.key
+  // - data.value
+  // - data.previousValue
 })
 ```
 
@@ -108,10 +108,10 @@ AppStore.onSet('age', (evt) => {
 To watch when a particular key in the store is being deleted, we can use the method `.onDelete(key, fn)` as follow:
 ```js
 import AppStore from './AppStore'
-AppStore.onDelete('age', (evt) => {
+AppStore.onDelete('age', (data) => {
   // The available data are:
-  // - evt.key
-  // - evt.value (the last value it had before being deleted)
+  // - data.key
+  // - data.value (the last value it had before being deleted)
 })
 ```
 
